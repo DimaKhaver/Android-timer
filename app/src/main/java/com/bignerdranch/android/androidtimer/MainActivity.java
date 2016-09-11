@@ -36,34 +36,33 @@ public class MainActivity extends AppCompatActivity {
 
         mValue = Integer.valueOf(mEnter.getText().toString());
 
+        mEnter.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (!mEnter.getText().toString().isEmpty())
+                    mValue = Integer.valueOf(mEnter.getText().toString());
+                else {
+                    mValue = 0;
+                    mHandler.removeCallbacks(timerRunnable);
+                }
+            }
+        });
+
         mStartButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mStartButton.setClickable(false);
                 mEnter.setFocusable(false);
-                mEnter.addTextChangedListener(new TextWatcher() {
-                    @Override
-                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-                    }
-
-                    @Override
-                    public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                    }
-
-                    @Override
-                    public void afterTextChanged(Editable s) {
-                        if (!mEnter.getText().toString().isEmpty())
-                            mValue = Integer.valueOf(mEnter.getText().toString());
-                        else {
-                            mValue = 0;
-                            mHandler.removeCallbacks(timerRunnable);
-                        }
-
-                    }
-                });
-
                 setTimerValue(mValue);
                 mHandler.postDelayed(timerRunnable, 1000);
             }
