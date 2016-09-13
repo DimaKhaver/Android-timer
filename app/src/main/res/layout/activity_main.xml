@@ -21,9 +21,10 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.12"
-        android:text="10"
+        android:text="@string/ten_number"
         android:gravity="center"
         android:textColor="@android:color/black"
+        android:inputType="number"
         android:textSize="25sp"/>
 
     <LinearLayout
@@ -38,7 +39,7 @@
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_weight="1"
-            android:text="START"
+            android:text="@string/start"
             android:textColor="@android:color/black"
             android:textSize="25sp"
             android:gravity="center"/>
@@ -48,7 +49,7 @@
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_weight="1"
-            android:text="STOP"
+            android:text="@string/stop"
             android:textSize="25sp"
             android:textColor="@android:color/black"
             android:gravity="center"/>

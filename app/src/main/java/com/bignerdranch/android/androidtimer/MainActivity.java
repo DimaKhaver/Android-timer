@@ -4,7 +4,6 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
@@ -16,10 +15,12 @@ import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
 
+    private final int SEC_UPDATE = 1000;
+    private final int SEC_IN_MIN = 60;
+
     private TextView mTimerValue;
     private EditText mEnter;
     private Button mStartButton;
-    private Button mStopButton;
     private Handler mHandler = new Handler();
     private int mValue;
 
@@ -30,11 +31,11 @@ public class MainActivity extends AppCompatActivity {
 
         mTimerValue = (TextView) findViewById(R.id.timer_value);
         mEnter = (EditText) findViewById(R.id.keyboard_value);
-        mEnter.setInputType(InputType.TYPE_CLASS_NUMBER);
         mStartButton = (Button) findViewById(R.id.start_button);
-        mStopButton = (Button) findViewById(R.id.stop_button);
+        Button stopButton = (Button) findViewById(R.id.stop_button);
 
-        mValue = Integer.valueOf(mEnter.getText().toString());
+        if (!mEnter.getText().toString().isEmpty() && Integer.valueOf(mEnter.getText().toString()) > 0)
+            mValue = Integer.valueOf(mEnter.getText().toString());
 
         mEnter.addTextChangedListener(new TextWatcher() {
             @Override
@@ -49,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (!mEnter.getText().toString().isEmpty())
+                if (!mEnter.getText().toString().isEmpty() && Integer.valueOf(mEnter.getText().toString()) > 0)
                     mValue = Integer.valueOf(mEnter.getText().toString());
                 else {
                     mValue = 0;
@@ -61,21 +62,27 @@ public class MainActivity extends AppCompatActivity {
         mStartButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mStartButton.setClickable(false);
-                mEnter.setFocusable(false);
-                setTimerValue(mValue);
-                mHandler.postDelayed(timerRunnable, 1000);
+                if (mEnter.getText().toString().isEmpty()) {
+                    mHandler.removeCallbacks(timerRunnable);
+                } else {
+                    mStartButton.setClickable(false);
+                    mEnter.setFocusable(false);
+                    setTimerValue(mValue);
+                    mHandler.postDelayed(timerRunnable, SEC_UPDATE);
+                }
             }
         });
 
-        mStopButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mHandler.removeCallbacks(timerRunnable);
-                mStartButton.setClickable(true);
-                mEnter.setFocusableInTouchMode(true);
-            }
-        });
+        if (stopButton != null) {
+            stopButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mHandler.removeCallbacks(timerRunnable);
+                    mStartButton.setClickable(true);
+                    mEnter.setFocusableInTouchMode(true);
+                }
+            });
+        }
     }
 
     @Override
@@ -105,10 +112,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setTimerValue(int mValue) {
-
         if (mValue != 0) {
             long mins = TimeUnit.SECONDS.toMinutes(mValue);
-            long secs = TimeUnit.SECONDS.toSeconds(mValue % 60);
+            long secs = TimeUnit.SECONDS.toSeconds(mValue % SEC_IN_MIN);
             mTimerValue.setText(String.format("%02d:%02d", mins, secs));
         }
     }
@@ -116,16 +122,22 @@ public class MainActivity extends AppCompatActivity {
     private Runnable timerRunnable = new Runnable() {
         @Override
         public void run() {
-
             if (mValue > 0) {
                 mValue -= 1;
                 setTimerValue(mValue);
-                mHandler.postDelayed(this, 1000);
+                mHandler.postDelayed(this, SEC_UPDATE);
             } else if (mValue == 0){
+
                 long mins = TimeUnit.SECONDS.toMinutes(Integer.valueOf(mEnter.getText().toString()));
-                long secs = TimeUnit.SECONDS.toSeconds(Integer.valueOf(mEnter.getText().toString()) % 60);
+                long secs = TimeUnit.SECONDS.toSeconds(Integer.valueOf(mEnter.getText().toString()) % SEC_IN_MIN);
                 mTimerValue.setText(String.format("%02d:%02d", mins, secs));
+
+                if (!mEnter.getText().toString().isEmpty() && Integer.valueOf(mEnter.getText().toString()) != 0){
+                    mValue = Integer.valueOf(mEnter.getText().toString());
+                }
+                mStartButton.setClickable(true);
                 mHandler.removeCallbacks(timerRunnable);
+                mEnter.setFocusableInTouchMode(true);
             }
         }
     };
