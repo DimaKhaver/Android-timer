@@ -90,6 +90,8 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         if (!mEnter.getText().toString().isEmpty())
             mValue = Integer.valueOf(mEnter.getText().toString());
+
+        mStartButton.setClickable(true);
     }
 
     @Override
@@ -97,18 +99,22 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         if (!mEnter.getText().toString().isEmpty())
             mValue = Integer.valueOf(mEnter.getText().toString());
+
+        mStartButton.setClickable(true);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         mHandler.removeCallbacks(timerRunnable);
+        mStartButton.setClickable(false);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         mHandler.removeCallbacks(timerRunnable);
+        mStartButton.setClickable(false);
     }
 
     private void setTimerValue(int mValue) {
