@@ -12,27 +12,30 @@ import android.widget.TextView;
 
 import java.util.concurrent.TimeUnit;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 
 public class MainActivity extends AppCompatActivity {
 
     private final int SEC_UPDATE = 1000;
     private final int SEC_IN_MIN = 60;
 
-    private TextView mTimerValue;
-    private EditText mEnter;
-    private Button mStartButton;
     private Handler mHandler = new Handler();
     private int mValue;
+
+    @BindView(R.id.timer_value) TextView mTimerValue;
+    @BindView(R.id.keyboard_value) EditText mEnter;
+    @BindView(R.id.start_button) Button mStartButton;
+    @BindView(R.id.stop_button) Button mStopButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mTimerValue = (TextView) findViewById(R.id.timer_value);
-        mEnter = (EditText) findViewById(R.id.keyboard_value);
-        mStartButton = (Button) findViewById(R.id.start_button);
-        Button stopButton = (Button) findViewById(R.id.stop_button);
+        ButterKnife.bind(this);
 
         if (!mEnter.getText().toString().isEmpty() && Integer.valueOf(mEnter.getText().toString()) > 0)
             mValue = Integer.valueOf(mEnter.getText().toString());
@@ -58,30 +61,22 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
 
-        mStartButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mEnter.getText().toString().isEmpty()) {
-                    mHandler.removeCallbacks(timerRunnable);
-                } else {
-                    mStartButton.setClickable(false);
-                    mEnter.setFocusable(false);
-                    setTimerValue(mValue);
-                    mHandler.postDelayed(timerRunnable, SEC_UPDATE);
-                }
-            }
-        });
+    @OnClick(R.id.stop_button) public void onStopButtonClick() {
+        mHandler.removeCallbacks(timerRunnable);
+        mStartButton.setClickable(true);
+        mEnter.setFocusableInTouchMode(true);
+    }
 
-        if (stopButton != null) {
-            stopButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mHandler.removeCallbacks(timerRunnable);
-                    mStartButton.setClickable(true);
-                    mEnter.setFocusableInTouchMode(true);
-                }
-            });
+    @OnClick(R.id.start_button) public void onStartButtonClick() {
+        if (mEnter.getText().toString().isEmpty()) {
+            mHandler.removeCallbacks(timerRunnable);
+        } else {
+            mStartButton.setClickable(false);
+            mEnter.setFocusable(false);
+            setTimerValue(mValue);
+            mHandler.postDelayed(timerRunnable, SEC_UPDATE);
         }
     }
 
