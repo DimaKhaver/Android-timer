@@ -16,7 +16,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-
+// Base timer
 public class MainActivity extends AppCompatActivity {
 
     private final int SEC_UPDATE = 1000;
@@ -143,3 +143,116 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 }
+
+
+/*
+
+   Custom GameTimer class which I use in the game "Bulls and Cows".
+   It interacts with the data layer in the app.
+
+*/
+
+
+/*
+
+public class GameTimer {
+
+    @Inject PlayerManager mPlayerManager;
+
+    private static final String TAG = "AndroidTimer";
+    private static final int SEC_UPDATE = 1000, MS_IN_SEC = 1000;
+    private static final int SEC_IN_HOUR = 3600;
+    private static final int SEC_IN_MIN = 60;
+
+    private long timeInMilliseconds = 0L;
+    private long timeSwapBuff = 0L;
+    private long updatedTime = 0L;
+    private long startTime = 0L;
+
+    private Handler handler = new Handler();
+
+    //  Only two conditions: start and stop
+    public GameTimer() {
+        App.getAppComponent().inject(this);
+    }
+
+    public void startTimer() {
+        startTime = SystemClock.uptimeMillis();
+        handler.postDelayed(runnable, SEC_UPDATE);
+
+        Log.i(TAG, "Timer is started; timeSwapBuff = " + timeSwapBuff);
+    }
+
+    public void stopTimer(final String prevTime) {
+        timeSwapBuff += timeInMilliseconds;
+        saveCurrentTime(prevTime);
+        handler.removeCallbacks(runnable);
+
+        Log.i(TAG, "Timer is stopped; timeSwapBuff = " + timeSwapBuff);
+    }
+
+    public void setToZero() {
+        timeSwapBuff = 0L;
+        updatedTime = 0L;
+        timeInMilliseconds = 0L;
+    }
+
+    public void resumeTimer() {
+        final Game game = mPlayerManager.getPlayer().getCurrentGame();
+        final String reloadedTime = game.getGameTime();
+
+        if (reloadedTime != null) {
+            String[] units = reloadedTime.split(":");
+
+            final int hours = Integer.parseInt(units[0]);
+            final int mins = Integer.parseInt(units[1]);
+            final int secs = Integer.parseInt(units[2]);
+            // convert everything into MS
+            timeSwapBuff = (SEC_IN_HOUR * hours + SEC_IN_MIN * mins + secs) * MS_IN_SEC;
+        }
+
+        handler.postDelayed(runnable, SEC_UPDATE);
+
+        Log.i("RELOADED TIME:", reloadedTime);
+        Log.i("\nRESET TIME:", String.valueOf(timeSwapBuff));
+    }
+
+    private void saveCurrentTime(final String prevTime) {
+        final String currentTime = convertTime(prevTime);
+        final Game game = mPlayerManager.getPlayer().getCurrentGame();
+
+        game.setGameTime(currentTime);
+    }
+
+    private String convertTime(final String prevTime) {
+
+        if (prevTime != null) {
+            String[] units = prevTime.split(":");
+
+            final int hours = Integer.parseInt(units[0]);
+            final int mins = Integer.parseInt(units[1]);
+            final int secs = Integer.parseInt(units[2]);
+            // convert everything into MS
+            timeSwapBuff += (SEC_IN_HOUR * hours + SEC_IN_MIN * mins + secs) * MS_IN_SEC;
+
+            Log.i(TAG, "CONVERT_TIME = " + String.valueOf(timeSwapBuff));
+        }
+
+        return String.format("%02d:%02d:%02d",
+                TimeUnit.MILLISECONDS.toHours(updatedTime),
+                TimeUnit.MILLISECONDS.toMinutes(updatedTime) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(updatedTime)),
+                TimeUnit.MILLISECONDS.toSeconds(updatedTime) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(updatedTime)));
+    }
+
+    private Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            timeInMilliseconds = SystemClock.uptimeMillis() - startTime;
+            updatedTime = timeSwapBuff + timeInMilliseconds;
+            handler.postDelayed(this, SEC_UPDATE);
+        }
+    };
+}
+
+
+*/
