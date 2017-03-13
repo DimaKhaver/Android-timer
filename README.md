@@ -2,7 +2,7 @@
 Two timer-classes in Android: 
 
 
-1. it's a base timer-class;
+1. It's a base timer-class;
 
 2. GameTimer class, which I use in the game "Bulls and Cows".
 
