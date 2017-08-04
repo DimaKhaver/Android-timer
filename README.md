@@ -1,8 +1,8 @@
 # Android-timer
-Two timer-classes in Android: 
+Two classes for using timers in Android: 
 
 
-1. It's a base timer-class;
+1. It's a standart class;
 
 2. GameTimer class, which I use in the game "Bulls and Cows".
 
